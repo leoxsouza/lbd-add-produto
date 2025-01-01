@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public record Pedido(
+public record Order(
         String pedidoId,
         List<Item> items,
         String status,
@@ -12,8 +12,8 @@ public record Pedido(
         String timestamp,
         String observacao
 ) {
-    // Construtor compacto com validações
-    public Pedido {
+
+    public Order {
         if (items == null || items.isEmpty()) {
             throw new IllegalArgumentException("Pedido deve conter pelo menos um item");
         }
@@ -22,9 +22,8 @@ public record Pedido(
         }
     }
 
-    // Factory method para criar pedido novo
-    public static Pedido novo(List<Item> items, Double total, String observacao) {
-        return new Pedido(
+    public static Order novo(List<Item> items, Double total, String observacao) {
+        return new Order(
                 UUID.randomUUID().toString(),
                 items,
                 "PENDENTE",

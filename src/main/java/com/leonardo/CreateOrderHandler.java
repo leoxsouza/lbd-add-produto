@@ -1,22 +1,22 @@
 package com.leonardo;
 
-import com.leonardo.dto.in.Pedido;
+import com.leonardo.dto.in.Order;
 import com.leonardo.dto.out.OutputObject;
-import com.leonardo.service.CriarPedidoService;
+import com.leonardo.service.CreateOrderService;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 
-@Named("criar-pedido")
-public class CriarPedidoHandler implements RequestHandler<Pedido, OutputObject> {
+@Named("create-order")
+public class CreateOrderHandler implements RequestHandler<Order, OutputObject> {
 
     @Inject
-    CriarPedidoService service;
+    CreateOrderService service;
 
     @Override
-    public OutputObject handleRequest(Pedido input, Context context) {
+    public OutputObject handleRequest(Order input, Context context) {
         return service.process(input).setRequestId(context.getAwsRequestId());
     }
 }
