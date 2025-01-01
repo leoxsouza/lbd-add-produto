@@ -12,8 +12,11 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 @Named("create-order")
 public class CreateOrderHandler implements RequestHandler<Order, OutputObject> {
 
-    @Inject
-    CreateOrderService service;
+    private final CreateOrderService service;
+
+    public CreateOrderHandler(CreateOrderService service) {
+        this.service = service;
+    }
 
     @Override
     public OutputObject handleRequest(Order input, Context context) {

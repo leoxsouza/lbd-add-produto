@@ -3,31 +3,31 @@ package com.leonardo.service;
 import com.leonardo.dto.in.Order;
 import com.leonardo.dto.out.OutputObject;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class CreateOrderService {
+public class CreateOrderService extends AbstractService {
 
-    @Inject
-    DynamoDbAsyncClient dynamoDbAsyncClient;
+    private final DynamoDbClient dynamoDbClient;
 
-    @Inject
-    DynamoDbClient dynamoDbClient;
+    public CreateOrderService(final DynamoDbClient dynamoDbClient) {
+        this.dynamoDbClient = dynamoDbClient;
+    }
 
     public OutputObject process(Order input) {
-        var asyncResult = dynamoDbAsyncClient.scan(ScanRequest.builder().build());
-        System.out.println(asyncResult);
-
-        var syncResult = dynamoDbClient.scan(ScanRequest.builder().build());
-        System.out.println(syncResult);
-
-        System.out.println("Processing input: " + input);
-        String result = input.toString();
+        var result = this.findAll();
+        System.out.println(result);
         OutputObject out = new OutputObject();
-        out.setResult(result);
+        out.setResult(result.toString());
         return out;
+    }
+
+    private List<Order> findAll() {
+        return dynamoDbClient.scanPaginator(getScanRequest()).items().stream()
+                .map(Order::from)
+                .collect(Collectors.toList());
     }
 }

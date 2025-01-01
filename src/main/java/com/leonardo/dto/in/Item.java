@@ -1,5 +1,8 @@
 package com.leonardo.dto.in;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public record Item(
         String nome,
         Integer quantidade,
