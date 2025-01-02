@@ -8,24 +8,23 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RegisterForReflection
 public record Order(
-        String pedidoId,
+        String orderId,
         List<Item> items,
         String status,
         Double total,
         String timestamp,
-        String observacao
+        String observation
 ) {
 
     public Order {
         if (items == null || items.isEmpty()) {
-            throw new IllegalArgumentException("Pedido deve conter pelo menos um item");
+            throw new IllegalArgumentException("Order should have at least one item");
         }
         if (total == null || total <= 0) {
-            throw new IllegalArgumentException("Total do pedido deve ser maior que zero");
+            throw new IllegalArgumentException("Total should be greater than zero");
         }
     }
 
@@ -33,7 +32,7 @@ public record Order(
         return new Order(
                 UUID.randomUUID().toString(),
                 items,
-                "PENDENTE",
+                "PENDING",
                 total,
                 LocalDateTime.now().toString(),
                 observacao
@@ -47,7 +46,13 @@ public record Order(
 
         return new Order(
                 item.get(AbstractService.ORDER_PEDIDOID_COL).s(),
-                List.of(new Item("item1", 1, "obs1")), //TODO: understand how to map this items
+                item.get(AbstractService.ORDER_ITEMS_COL).l().stream()
+                        .map(AttributeValue::m)
+                        .map(m -> new Item(
+                                m.get(AbstractService.ITEM_NAME_COL).s(),
+                                Integer.parseInt(m.get(AbstractService.ITEM_QUANTITY_COL).n()),
+                                m.get(AbstractService.ITEM_OBSERVATION_COL).s()
+                        )).toList(),
                 item.get(AbstractService.ORDER_STATUS_COL).s(),
                 Double.parseDouble(item.get(AbstractService.ORDER_TOTAL_COL).n()),
                 item.get(AbstractService.ORDER_TIMESTAMP_COL).s(),

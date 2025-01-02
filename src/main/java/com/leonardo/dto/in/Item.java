@@ -4,16 +4,16 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @RegisterForReflection
 public record Item(
-        String nome,
-        Integer quantidade,
-        String observacao
+        String name,
+        Integer quantity,
+        String observation
 ) {
     public Item {
-        if (quantidade == null || quantidade <= 0) {
-            throw new IllegalArgumentException("Quantidade deve ser maior que zero");
+        if (quantity == null || quantity <= 0) {
+            throw new IllegalArgumentException("Quantity should be greater than zero");
         }
-        if (nome == null || nome.isBlank()) {
-            throw new IllegalArgumentException("Nome do item é obrigatório");
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Item's name should not be empty");
         }
     }
 }
