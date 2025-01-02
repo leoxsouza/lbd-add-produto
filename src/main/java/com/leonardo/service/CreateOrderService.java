@@ -6,7 +6,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class CreateOrderService extends AbstractService {
@@ -28,6 +27,6 @@ public class CreateOrderService extends AbstractService {
     private List<Order> findAll() {
         return dynamoDbClient.scanPaginator(getScanRequest()).items().stream()
                 .map(Order::from)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
