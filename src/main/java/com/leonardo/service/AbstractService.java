@@ -24,35 +24,35 @@ public abstract class AbstractService {
         return "Orders";
     }
 
-    protected ScanRequest getScanRequest() {
-        return ScanRequest.builder().tableName(getTableName()).build();
-    }
+//    protected ScanRequest getScanRequest() {
+//        return ScanRequest.builder().tableName(getTableName()).build();
+//    }
+//
+//    protected PutItemRequest getPutItemRequest(Order order) {
+//        return PutItemRequest.builder()
+//                .tableName(getTableName())
+//                .item(getItem(order))
+//                .build();
+//    }
 
-    protected PutItemRequest getPutItemRequest(Order order) {
-        return PutItemRequest.builder()
-                .tableName(getTableName())
-                .item(getItem(order))
-                .build();
-    }
-
-    private Map<String, AttributeValue> getItem(Order order) {
-        return Map.of(
-                ORDER_PEDIDOID_COL, AttributeValue.builder().s(order.orderId()).build(),
-                ORDER_STATUS_COL, AttributeValue.builder().s(order.status()).build(),
-                ORDER_TOTAL_COL, AttributeValue.builder().n(order.total().toString()).build(),
-                ORDER_TIMESTAMP_COL, AttributeValue.builder().s(order.timestamp()).build(),
-                ORDER_OBSERVACAO_COL, AttributeValue.builder().s(order.observation()).build(),
-                ORDER_ITEMS_COL, AttributeValue.builder().l(order.items().stream()
-                        .map(item -> AttributeValue.builder().m(
-                                Map.of(
-                                        ITEM_NAME_COL, AttributeValue.builder().s(item.name()).build(),
-                                        ITEM_QUANTITY_COL, AttributeValue.builder().n(item.quantity().toString()).build(),
-                                        ITEM_OBSERVATION_COL, AttributeValue.builder().s(item.observation()).build()
-                                )
-                        ).build())
-                        .toList()
-                ).build()
-        );
-    }
+//    private Map<String, AttributeValue> getItem(Order order) {
+//        return Map.of(
+//                ORDER_PEDIDOID_COL, AttributeValue.builder().s(order.orderId()).build(),
+//                ORDER_STATUS_COL, AttributeValue.builder().s(order.status()).build(),
+//                ORDER_TOTAL_COL, AttributeValue.builder().n(order.total().toString()).build(),
+//                ORDER_TIMESTAMP_COL, AttributeValue.builder().s(order.timestamp()).build(),
+//                ORDER_OBSERVACAO_COL, AttributeValue.builder().s(order.observation()).build(),
+//                ORDER_ITEMS_COL, AttributeValue.builder().l(order.items().stream()
+//                        .map(item -> AttributeValue.builder().m(
+//                                Map.of(
+//                                        ITEM_NAME_COL, AttributeValue.builder().s(item.name()).build(),
+//                                        ITEM_QUANTITY_COL, AttributeValue.builder().n(item.quantity().toString()).build(),
+//                                        ITEM_OBSERVATION_COL, AttributeValue.builder().s(item.observation()).build()
+//                                )
+//                        ).build())
+//                        .toList()
+//                ).build()
+//        );
+//    }
 
 }
