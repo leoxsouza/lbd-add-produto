@@ -13,19 +13,9 @@ public class Item {
     }
 
     public Item(String name, Integer quantity, String observation) {
-        validateItem(name, quantity);
         this.name = name;
         this.quantity = quantity;
         this.observation = observation;
-    }
-
-    private void validateItem(String name, Integer quantity) {
-        if (quantity == null || quantity <= 0) {
-            throw new IllegalArgumentException("Quantity should be greater than zero");
-        }
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Item's name should not be empty");
-        }
     }
 
     public String getName() {
@@ -50,5 +40,14 @@ public class Item {
 
     public void setObservation(String observation) {
         this.observation = observation;
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "name='" + name + '\'' +
+                ", quantity=" + quantity +
+                ", observation='" + observation + '\'' +
+                '}';
     }
 }

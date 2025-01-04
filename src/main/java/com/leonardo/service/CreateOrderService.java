@@ -1,32 +1,54 @@
 package com.leonardo.service;
 
+import com.leonardo.dto.in.Item;
 import com.leonardo.dto.in.Order;
 import com.leonardo.dto.out.OutputObject;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
+import java.util.List;
+import java.util.UUID;
+
 
 @ApplicationScoped
-public class CreateOrderService extends AbstractService {
+public class CreateOrderService {
 
+    private final DynamoDbTable<Order> orderTable;
 
-    @Inject
-    DynamoDbEnhancedClient enhancedClient;
-
+    public CreateOrderService(final DynamoDbEnhancedClient enhancedClient) {
+        this.orderTable = enhancedClient.table("Orders", TableSchema.fromClass(Order.class));
+    }
 
     public OutputObject process(Order input) {
-        DynamoDbTable<Order> orderTable = enhancedClient.table(getTableName(), TableSchema.fromClass(Order.class));
+        validateOrder(input);
+        input.setOrderId(UUID.randomUUID().toString());
         orderTable.putItem(input);
-//        var listResult = orderTable.scan().items().stream().toList();
         OutputObject out = new OutputObject();
-        out.setResult("listResult.toString()");
+        out.setResult("Order created with id: " + input.getOrderId());
         return out;
     }
 
-//    public List<Order> findAll() {
-//        return orderTable.scan().items().stream().toList();
-//    }
+    private void validateOrder(Order order) {
+        if (order.getItems() == null || order.getItems().isEmpty()) {
+            throw new IllegalArgumentException("Order should have at least one item");
+        }
+        if (order.getTotal() == null || order.getTotal() <= 0) {
+            throw new IllegalArgumentException("Total should be greater than zero");
+        }
+
+        validateItems(order.getItems());
+    }
+
+    private void validateItems(List<Item> items) {
+        for (Item item : items) {
+            if (item.getQuantity() == null || item.getQuantity() <= 0) {
+                throw new IllegalArgumentException("Quantity should be greater than zero");
+            }
+            if (item.getName() == null || item.getName().isBlank()) {
+                throw new IllegalArgumentException("Item's name should not be empty");
+            }
+        }
+    }
 }
