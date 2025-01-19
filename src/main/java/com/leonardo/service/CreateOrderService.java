@@ -1,5 +1,6 @@
 package com.leonardo.service;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.leonardo.dto.in.Item;
 import com.leonardo.dto.in.Order;
 import com.leonardo.dto.out.OutputObject;
@@ -9,7 +10,6 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
 import java.util.List;
-import java.util.UUID;
 
 
 @ApplicationScoped
@@ -23,7 +23,7 @@ public class CreateOrderService {
 
     public OutputObject process(Order input) {
         validateOrder(input);
-        input.setOrderId(UUID.randomUUID().toString());
+        input.setOrderId(generateOrderId());
         orderTable.putItem(input);
         OutputObject out = new OutputObject();
         out.setResult("Order created with id: " + input.getOrderId());
@@ -50,5 +50,10 @@ public class CreateOrderService {
                 throw new IllegalArgumentException("Item's name should not be empty");
             }
         }
+    }
+
+    private Integer generateOrderId() {
+        char[] numbers = "0123456789".toCharArray();
+        return Integer.parseInt(NanoIdUtils.randomNanoId(NanoIdUtils.DEFAULT_NUMBER_GENERATOR, numbers, 4));
     }
 }
