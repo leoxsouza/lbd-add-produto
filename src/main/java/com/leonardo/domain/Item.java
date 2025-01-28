@@ -1,4 +1,4 @@
-package com.leonardo.dto.in;
+package com.leonardo.domain;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 

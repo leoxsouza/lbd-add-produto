@@ -1,6 +1,6 @@
 package com.leonardo;
 
-import com.leonardo.dto.in.Order;
+import com.leonardo.domain.Order;
 import com.leonardo.dto.out.OutputObject;
 import com.leonardo.service.CreateOrderService;
 import jakarta.inject.Named;

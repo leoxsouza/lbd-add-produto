@@ -1,15 +1,18 @@
 package com.leonardo.service;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import com.leonardo.dto.in.Item;
-import com.leonardo.dto.in.Order;
+import com.leonardo.domain.Item;
+import com.leonardo.domain.Order;
+import com.leonardo.domain.enums.OrderStatusEnum;
 import com.leonardo.dto.out.OutputObject;
 import jakarta.enterprise.context.ApplicationScoped;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Random;
 
 
 @ApplicationScoped
@@ -18,15 +21,16 @@ public class CreateOrderService {
     private final DynamoDbTable<Order> orderTable;
 
     public CreateOrderService(final DynamoDbEnhancedClient enhancedClient) {
-        this.orderTable = enhancedClient.table("Orders", TableSchema.fromClass(Order.class));
+        this.orderTable = enhancedClient.table(Order.TABLE_NAME, TableSchema.fromClass(Order.class));
     }
 
-    public OutputObject process(Order input) {
-        validateOrder(input);
-        input.setOrderId(generateOrderId());
-        orderTable.putItem(input);
+    public OutputObject process(Order orderInput) {
+        validateOrder(orderInput);
+        orderInput.setOrderId(generateOrderId());
+        orderInput.setStatus(OrderStatusEnum.PENDING);
+        orderTable.putItem(orderInput);
         OutputObject out = new OutputObject();
-        out.setResult("Order created with id: " + input.getOrderId());
+        out.setResult("Order created with id: " + orderInput.getOrderId());
         return out;
     }
 
@@ -54,6 +58,7 @@ public class CreateOrderService {
 
     private Integer generateOrderId() {
         char[] numbers = "0123456789".toCharArray();
-        return Integer.parseInt(NanoIdUtils.randomNanoId(NanoIdUtils.DEFAULT_NUMBER_GENERATOR, numbers, 4));
+        Random random = new SecureRandom();
+        return Integer.parseInt(NanoIdUtils.randomNanoId(random, numbers, 4));
     }
 }

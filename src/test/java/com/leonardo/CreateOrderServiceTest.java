@@ -1,8 +1,8 @@
 package com.leonardo;
 
 
-import com.leonardo.dto.in.Item;
-import com.leonardo.dto.in.Order;
+import com.leonardo.domain.Item;
+import com.leonardo.domain.Order;
 import com.leonardo.dto.out.OutputObject;
 import com.leonardo.service.CreateOrderService;
 import org.junit.jupiter.api.BeforeEach;
